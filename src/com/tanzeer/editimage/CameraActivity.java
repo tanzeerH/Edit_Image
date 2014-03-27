@@ -190,5 +190,11 @@ public class CameraActivity extends Activity implements CameraFragmentListener {
 
 		}.start();
 	}
+	@Override
+	protected void onStop() {
+		if(overlayInfo.isShowing())
+			overlayInfo.cancel();
+		super.onStop();
+	}
 
 }

@@ -5,25 +5,30 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Stack;
 
 import org.metalev.multitouch.controller.ImageEntity;
 
+import com.tanzeer.editimage.asynktask.SendMailTask;
 import com.tanzeer.editimage.utils.CommonConstants;
 import com.tanzeer.editimage.utils.ImageUtils;
 import com.tanzeer.editimage.views.PictureView;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.media.FaceDetector.Face;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,10 +39,13 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 public class EditImageActivity extends Activity implements OnClickListener {
 	private final static String t = EditImageActivity.class.getName();
@@ -63,7 +71,7 @@ public class EditImageActivity extends Activity implements OnClickListener {
 
 	public static Bitmap sendPicture;
 	private ImageView imgSunglass, imgRain, imgSun, imgHambuger,imgMarker;
-	private Button btnDelete;
+	private Button btnDelete,btnMailSmtp;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -110,6 +118,18 @@ public class EditImageActivity extends Activity implements OnClickListener {
 
 				}
 
+			}
+		});
+		btnMailSmtp=(Button)findViewById(R.id.mailbtn);
+		btnMailSmtp.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				pictureView.buildDrawingCache();
+				pictureView.saveImage(getApplicationContext());
+				showMailDialog();
+				
+				
 			}
 		});
 		/*
@@ -404,6 +424,43 @@ public class EditImageActivity extends Activity implements OnClickListener {
 		pictureView.addImageEntity(EditImageActivity.this, imageEntity);
 		pictureView.invalidate();
 
+	}
+	private void showMailDialog()
+	{
+		final Dialog dialog=new Dialog(EditImageActivity.this);
+		dialog.setContentView(R.layout.dialog_send_mail);
+		Button btn=(Button)dialog.findViewById(R.id.buttonsendmail);
+		dialog.show();
+		btn.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				String fromEmail = ((EditText) dialog.findViewById(R.id.fromMail))
+						.getText().toString();
+				String fromPassword = ((EditText) dialog.findViewById(R.id.password))
+						.getText().toString();
+				String toEmails = ((EditText) dialog.findViewById(R.id.Tomail))
+						.getText().toString();
+				List<String> toEmailList = Arrays.asList(toEmails
+						.split("\\s*,\\s*"));
+				//test
+				
+				Log.i("SendMailActivity", "To List: " + toEmailList);
+				String emailSubject = "Mail With Image";
+				String emailBody = "";
+				Log.v("here path",pictureView.getEditedImagePath());
+				new SendMailTask(EditImageActivity.this).execute(fromEmail,
+						fromPassword, toEmailList, emailSubject, emailBody,pictureView.getEditedImagePath());
+				dialog.cancel();
+				
+			}
+		});
+	}
+	@Override
+	protected void onDestroy() {
+		pictureView.buildDrawingCache();
+		pictureView.saveImage(getApplicationContext());
+		super.onDestroy();
 	}
 
 }

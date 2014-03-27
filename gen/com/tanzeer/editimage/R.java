@@ -24,37 +24,46 @@ public final class R {
         public static final int back1=0x7f020000;
         public static final int border=0x7f020001;
         public static final int delete_button=0x7f020002;
-        public static final int hamburger=0x7f020003;
-        public static final int ic_camera=0x7f020004;
-        public static final int ic_launcher=0x7f020005;
-        public static final int marker=0x7f020006;
-        public static final int marker48=0x7f020007;
-        public static final int rain=0x7f020008;
-        public static final int recycle_2x=0x7f020009;
-        public static final int recycle_pressed_2x=0x7f02000a;
-        public static final int sun=0x7f02000b;
-        public static final int sunglass=0x7f02000c;
+        public static final int email_2x=0x7f020003;
+        public static final int email_button=0x7f020004;
+        public static final int email_pressed_2x=0x7f020005;
+        public static final int hamburger=0x7f020006;
+        public static final int ic_camera=0x7f020007;
+        public static final int ic_launcher=0x7f020008;
+        public static final int marker=0x7f020009;
+        public static final int marker48=0x7f02000a;
+        public static final int rain=0x7f02000b;
+        public static final int recycle_2x=0x7f02000c;
+        public static final int recycle_pressed_2x=0x7f02000d;
+        public static final int sun=0x7f02000e;
+        public static final int sunglass=0x7f02000f;
     }
     public static final class id {
-        public static final int action_settings=0x7f08000b;
+        public static final int Tomail=0x7f080005;
+        public static final int action_settings=0x7f080010;
         public static final int btncamera=0x7f080001;
+        public static final int buttonsendmail=0x7f080006;
         public static final int camera_fragment=0x7f080000;
-        public static final int deletebtn=0x7f080009;
-        public static final int hamurger=0x7f080008;
-        public static final int imageView2=0x7f080003;
-        public static final int marker=0x7f080005;
+        public static final int deletebtn=0x7f08000d;
+        public static final int fromMail=0x7f080003;
+        public static final int hamurger=0x7f08000c;
+        public static final int imageView2=0x7f080007;
+        public static final int mailbtn=0x7f08000e;
+        public static final int marker=0x7f080009;
+        public static final int password=0x7f080004;
         public static final int pictureView1=0x7f080002;
-        public static final int rain=0x7f080007;
-        public static final int sun=0x7f080006;
-        public static final int sunglass=0x7f080004;
-        public static final int timer_text=0x7f08000a;
+        public static final int rain=0x7f08000b;
+        public static final int sun=0x7f08000a;
+        public static final int sunglass=0x7f080008;
+        public static final int timer_text=0x7f08000f;
     }
     public static final class layout {
         public static final int activity_camera=0x7f030000;
         public static final int activity_main=0x7f030001;
         public static final int activity_photo2=0x7f030002;
-        public static final int editpicture=0x7f030003;
-        public static final int overlay=0x7f030004;
+        public static final int dialog_send_mail=0x7f030003;
+        public static final int editpicture=0x7f030004;
+        public static final int overlay=0x7f030005;
     }
     public static final class menu {
         public static final int main=0x7f070000;

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tanzeer.editimage"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="0.00.01" >
 
     <uses-sdk
         android:minSdkVersion="10"
@@ -10,6 +10,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
         android:allowBackup="true"
@@ -25,7 +27,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="CameraActivity"></activity>
+        <activity android:name="CameraActivity"
+            android:screenOrientation="portrait"></activity>
         <activity android:name="EditImageActivity"
              android:screenOrientation="landscape">
             

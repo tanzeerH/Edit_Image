@@ -58,6 +58,7 @@ public class PictureView extends ImageView implements
 	
 	private ArrayList<MultiTouchEntity> imageEntities = new ArrayList<MultiTouchEntity>();
 	private Uri outputPictireUri = null;
+	private String editedImagePath=null;
 	// --
 
 	private MultiTouchController<MultiTouchEntity> multiTouchController = new MultiTouchController<MultiTouchEntity>(
@@ -164,6 +165,7 @@ public class PictureView extends ImageView implements
 			root.mkdirs();
 			Log.v("flag","1");
 			File sdImageMainDirectory = new File(root, fileName);
+			editedImagePath=sdImageMainDirectory.getAbsolutePath();
 			outputPictireUri = Uri.fromFile(sdImageMainDirectory);
 			Log.v("flag","1");
 			fOut = new FileOutputStream(sdImageMainDirectory);
@@ -402,5 +404,9 @@ public class PictureView extends ImageView implements
 			exception.printStackTrace();
 		}
 	
+	}
+	public String getEditedImagePath()
+	{
+		return editedImagePath;
 	}
 }
