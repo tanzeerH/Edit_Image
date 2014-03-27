@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Edit Image</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="toast_error_save_picture">error in saving picture</string>
+     <string name="toast_error_camera_preview">error in camera preview</string>
+    
+
+</resources>
