@@ -7,6 +7,7 @@ import com.tanzeer.editimage.listener.CameraOrientationListener;
 import com.tanzeer.editimage.utils.PreferenceConnector;
 import com.tanzeer.editimage.views.CameraPreview;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
@@ -26,6 +27,7 @@ import android.view.ViewGroup;
 
 /** Fragment for displaying the camera preview. */
 
+@SuppressLint("NewApi")
 public class CameraFragment extends Fragment implements SurfaceHolder.Callback, Camera.PictureCallback {
 	public static final String TAG = "Mustache/CameraFragment";
 
@@ -80,6 +82,8 @@ public class CameraFragment extends Fragment implements SurfaceHolder.Callback, 
 		orientationListener.enable();
 		
 		int camid =PreferenceConnector.readInteger(act, PreferenceConnector.SELCTED_CAM_FACE,0);
+		//test for front camera
+		//camid=1;
 
 		
 		try {

@@ -14,10 +14,12 @@ import org.metalev.multitouch.controller.ImageEntity;
 import com.tanzeer.editimage.asynktask.SendMailTask;
 import com.tanzeer.editimage.utils.CommonConstants;
 import com.tanzeer.editimage.utils.ImageUtils;
+import com.tanzeer.editimage.utils.PreferenceConnector;
 import com.tanzeer.editimage.views.PictureView;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -30,6 +32,8 @@ import android.graphics.YuvImage;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.media.FaceDetector.Face;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -70,8 +74,8 @@ public class EditImageActivity extends Activity implements OnClickListener {
 	private int entityIndex = 0;
 
 	public static Bitmap sendPicture;
-	private ImageView imgSunglass, imgRain, imgSun, imgHambuger,imgMarker;
-	private Button btnDelete,btnMailSmtp;
+	private ImageView imgSunglass, imgRain, imgSun, imgHambuger, imgMarker;
+	private Button btnDelete, btnMailSmtp,btnFbShare;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -94,15 +98,15 @@ public class EditImageActivity extends Activity implements OnClickListener {
 
 			}
 		});
-		imgRain=(ImageView)findViewById(R.id.rain);
+		imgRain = (ImageView) findViewById(R.id.rain);
 		imgRain.setOnClickListener(this);
-		
-		imgMarker=(ImageView)findViewById(R.id.marker);
+
+		imgMarker = (ImageView) findViewById(R.id.marker);
 		imgMarker.setOnClickListener(this);
-		
-		imgHambuger=(ImageView)findViewById(R.id.hamurger);
+
+		imgHambuger = (ImageView) findViewById(R.id.hamurger);
 		imgHambuger.setOnClickListener(this);
-		imgSun=(ImageView)findViewById(R.id.sun);
+		imgSun = (ImageView) findViewById(R.id.sun);
 		imgSun.setOnClickListener(this);
 		btnDelete = (Button) findViewById(R.id.deletebtn);
 		btnDelete.setOnClickListener(new OnClickListener() {
@@ -120,16 +124,15 @@ public class EditImageActivity extends Activity implements OnClickListener {
 
 			}
 		});
-		btnMailSmtp=(Button)findViewById(R.id.mailbtn);
+		btnMailSmtp = (Button) findViewById(R.id.mailbtn);
 		btnMailSmtp.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
 				pictureView.buildDrawingCache();
 				pictureView.saveImage(getApplicationContext());
 				showMailDialog();
-				
-				
+
 			}
 		});
 		/*
@@ -144,6 +147,23 @@ public class EditImageActivity extends Activity implements OnClickListener {
 		 * 
 		 * } });
 		 */
+		btnFbShare=(Button)findViewById(R.id.facebookbtn);
+		btnFbShare.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				if(hasInternet(getApplicationContext()))
+				{
+					pictureView.buildDrawingCache();
+					pictureView.saveImage(getApplicationContext());
+					Intent intent=new Intent(getApplicationContext(),FacebookShareActivity.class);
+					intent.putExtra("path",pictureView.getEditedImagePath());
+					startActivity(intent);
+				}
+				
+				
+			}
+		});
 		pictureView.setDrawingCacheEnabled(true);
 		calcDisplayWidthAndHeight();
 		Intent intent = getIntent();
@@ -407,7 +427,7 @@ public class EditImageActivity extends Activity implements OnClickListener {
 
 	@Override
 	public void onClick(View v) {
-		ArrayList<String> list=new ArrayList<String>();
+		ArrayList<String> list = new ArrayList<String>();
 		if (v.getId() == R.id.marker) {
 			list.add("marker.png");
 		} else if (v.getId() == R.id.sun) {
@@ -415,52 +435,81 @@ public class EditImageActivity extends Activity implements OnClickListener {
 		} else if (v.getId() == R.id.hamurger) {
 			list.add("hamburger.png");
 		} else if (v.getId() == R.id.rain) {
-			list.add( "rain.png");
+			list.add("rain.png");
 		}
-		String[] paths=list.toArray(new String[list.size()]);
+		String[] paths = list.toArray(new String[list.size()]);
 		ImageEntity imageEntity = new ImageEntity(getApplicationContext(),
-			paths, pictureDisplayWidth, pictureDisplayHeight);
+				paths, pictureDisplayWidth, pictureDisplayHeight);
 		imageEntity.setScaleFactor(0.75);
 		pictureView.addImageEntity(EditImageActivity.this, imageEntity);
 		pictureView.invalidate();
 
 	}
-	private void showMailDialog()
-	{
-		final Dialog dialog=new Dialog(EditImageActivity.this);
+
+	private void showMailDialog() {
+		final Dialog dialog = new Dialog(EditImageActivity.this);
 		dialog.setContentView(R.layout.dialog_send_mail);
-		Button btn=(Button)dialog.findViewById(R.id.buttonsendmail);
+		Button btn = (Button) dialog.findViewById(R.id.buttonsendmail);
 		dialog.show();
 		btn.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View v) {
-				String fromEmail = ((EditText) dialog.findViewById(R.id.fromMail))
-						.getText().toString();
-				String fromPassword = ((EditText) dialog.findViewById(R.id.password))
-						.getText().toString();
+				//String fromEmail = ((EditText) dialog
+					//	.findViewById(R.id.fromMail)).getText().toString();
+				//String fromPassword = ((EditText) dialog
+					//	.findViewById(R.id.password)).getText().toString();
 				String toEmails = ((EditText) dialog.findViewById(R.id.Tomail))
-						.getText().toString();
+					.getText().toString();
 				List<String> toEmailList = Arrays.asList(toEmails
-						.split("\\s*,\\s*"));
-				//test
-				
+					.split("\\s*,\\s*"));
+				// test
+
 				Log.i("SendMailActivity", "To List: " + toEmailList);
-				String emailSubject = "Mail With Image";
-				String emailBody = "";
-				Log.v("here path",pictureView.getEditedImagePath());
-				new SendMailTask(EditImageActivity.this).execute(fromEmail,
-						fromPassword, toEmailList, emailSubject, emailBody,pictureView.getEditedImagePath());
+				// String emailSubject = "Mail With Image";
+				// String emailBody = "";
+				Log.v("here path", pictureView.getEditedImagePath());
+				new SendMailTask(EditImageActivity.this).execute(
+						PreferenceConnector.readString(getApplicationContext(),
+								PreferenceConnector.EMAIL_USERNAME, ""),
+						PreferenceConnector.readString(getApplicationContext(),
+								PreferenceConnector.EMAIL_PASS, ""),
+						toEmailList, PreferenceConnector.readString(
+								getApplicationContext(),
+								PreferenceConnector.EMAIL_SUBJECT, ""),
+						PreferenceConnector.readString(getApplicationContext(),
+								PreferenceConnector.EMAIL_BODY, ""),
+						pictureView.getEditedImagePath(), PreferenceConnector
+								.readString(getApplicationContext(),
+										PreferenceConnector.SMTP, ""),
+						PreferenceConnector.readString(getApplicationContext(),
+								PreferenceConnector.PORT_NUMBER, ""));
 				dialog.cancel();
-				
+
 			}
 		});
 	}
+
 	@Override
 	protected void onDestroy() {
 		pictureView.buildDrawingCache();
 		pictureView.saveImage(getApplicationContext());
 		super.onDestroy();
 	}
+	 public static boolean hasInternet(Context context) {
+	        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	        if (connectivity != null){
+	            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+	            if (info != null){
+	                for (int i = 0; i < info.length; i++){
+	                    if (info[i].getState() == NetworkInfo.State.CONNECTED){
+	                        return true;
+	                    }
+	                }
+	            }
+	        }
+	        return false;
+	    }
+	
 
 }

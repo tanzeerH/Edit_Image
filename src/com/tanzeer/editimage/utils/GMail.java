@@ -26,12 +26,17 @@ import android.util.Log;
 
 public class GMail {
 
-	final String emailPort = "587";// gmail's smtp port
-	final String smtpAuth = "true";
-	final String starttls = "true";
-	final String emailHost = "smtp.gmail.com";
+	//final String emailPort = "587";// gmail's smtp port
+	//final String smtpAuth = "true";
+	//final String starttls = "true";
+	//final String emailHost = "smtp.gmail.com";
 	// final String fromUser = "giftvincy@gmail.com";
 	// final String fromUserEmailPassword = "jk2008gv";
+
+	 String emailPort = "";// gmail's smtp port
+	final String smtpAuth = "true";
+	final String starttls = "true";
+	String emailHost = "";
 
 	String fromEmail;
 	String fromPassword;
@@ -49,8 +54,8 @@ public class GMail {
 	}
 
 	public GMail(String fromEmail, String fromPassword,
-			List<String> toEmailList, String emailSubject, String emailBody,String ipath) {
-		this.fromEmail = fromEmail;
+			List<String> toEmailList, String emailSubject, String emailBody,String ipath,String smtp,String port) {
+		this.fromEmail=fromEmail;
 		this.fromPassword = fromPassword;
 		this.toEmailList = toEmailList;
 		this.emailSubject = emailSubject;
@@ -58,10 +63,11 @@ public class GMail {
 		this.path=ipath;
 		Log.v("path",this.path);
 		emailProperties = System.getProperties();
-		emailProperties.put("mail.smtp.port", emailPort);
+		emailProperties.put("mail.smtp.port", port);
 		emailProperties.put("mail.smtp.auth", smtpAuth);
 		emailProperties.put("mail.smtp.starttls.enable", starttls);
 		Log.i("GMail", "Mail server properties set.");
+		emailHost=smtp;
 	}
 
 	public MimeMessage createEmailMessage() throws AddressException,
@@ -77,6 +83,9 @@ public class GMail {
 					new InternetAddress(toEmail));
 		}
 		emailMessage.setSubject(emailSubject);
+		BodyPart bodypartyext=new MimeBodyPart();
+		bodypartyext.setText(emailBody);
+		//emailMessage.s
 		Multipart multipart=new MimeMultipart();
 		BodyPart bodypart=new MimeBodyPart();
 		String path=this.path;
@@ -84,6 +93,7 @@ public class GMail {
 		bodypart.setDataHandler(new DataHandler(datasource));
 		bodypart.setFileName(path);
 		multipart.addBodyPart(bodypart);
+		multipart.addBodyPart(bodypartyext);
 		//emailMessage.setContent(emailBody, "text/html");// for a html email
 		// emailMessage.setText(emailBody);// for a text email
 		Log.i("GMail", "Email Message created.");
@@ -94,6 +104,7 @@ public class GMail {
 	public void sendEmail() throws AddressException, MessagingException {
 
 		Transport transport = mailSession.getTransport("smtp");
+		Log.v("host",emailHost+fromEmail+fromPassword);
 		transport.connect(emailHost, fromEmail, fromPassword);
 		Log.i("GMail","allrecipients: "+emailMessage.getAllRecipients());
 		transport.sendMessage(emailMessage, emailMessage.getAllRecipients());

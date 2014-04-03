@@ -6,6 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="toast_error_save_picture">error in saving picture</string>
      <string name="toast_error_camera_preview">error in camera preview</string>
+     <string name="app_id">587374364686891</string>
     
 
 </resources>
